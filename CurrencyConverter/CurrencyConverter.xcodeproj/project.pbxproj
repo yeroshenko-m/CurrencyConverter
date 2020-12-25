@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C0D51C1258FE7F000EF7EF8 /* ConverterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0D51C0258FE7F000EF7EF8 /* ConverterTableViewController.swift */; };
+		2C0D51C52590AD4100EF7EF8 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0D51C42590AD4100EF7EF8 /* Currency.swift */; };
+		2C0D51C82590AD6200EF7EF8 /* Converter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0D51C72590AD6200EF7EF8 /* Converter.swift */; };
 		2C3A9C95258B7DC400266687 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3A9C94258B7DC400266687 /* AppDelegate.swift */; };
 		2C3A9C97258B7DC400266687 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3A9C96258B7DC400266687 /* SceneDelegate.swift */; };
 		2C3A9C99258B7DC400266687 /* CurrenciesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3A9C98258B7DC400266687 /* CurrenciesListViewController.swift */; };
@@ -15,9 +18,13 @@
 		2C3A9CA1258B7DC800266687 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C3A9C9F258B7DC800266687 /* LaunchScreen.storyboard */; };
 		2C75C66C258F959B00C692F4 /* BankAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C75C66B258F959B00C692F4 /* BankAPI.swift */; };
 		2C75C670258F9EB100C692F4 /* CurrencyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C75C66F258F9EB100C692F4 /* CurrencyTableViewCell.swift */; };
+		2CFC52D32591003A00A8CF2A /* ConvertibleCurrencyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CFC52D22591003A00A8CF2A /* ConvertibleCurrencyTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C0D51C0258FE7F000EF7EF8 /* ConverterTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConverterTableViewController.swift; sourceTree = "<group>"; };
+		2C0D51C42590AD4100EF7EF8 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
+		2C0D51C72590AD6200EF7EF8 /* Converter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Converter.swift; sourceTree = "<group>"; };
 		2C3A9C91258B7DC400266687 /* CurrencyConverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CurrencyConverter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C3A9C94258B7DC400266687 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2C3A9C96258B7DC400266687 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -28,6 +35,7 @@
 		2C3A9CA2258B7DC800266687 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2C75C66B258F959B00C692F4 /* BankAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankAPI.swift; sourceTree = "<group>"; };
 		2C75C66F258F9EB100C692F4 /* CurrencyTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTableViewCell.swift; sourceTree = "<group>"; };
+		2CFC52D22591003A00A8CF2A /* ConvertibleCurrencyTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertibleCurrencyTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +49,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2C0D51CA2590AD8F00EF7EF8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				2C0D51C72590AD6200EF7EF8 /* Converter.swift */,
+				2C75C66B258F959B00C692F4 /* BankAPI.swift */,
+				2C0D51C42590AD4100EF7EF8 /* Currency.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		2C0D51CB2590ADA800EF7EF8 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				2C75C66F258F9EB100C692F4 /* CurrencyTableViewCell.swift */,
+				2CFC52D22591003A00A8CF2A /* ConvertibleCurrencyTableViewCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		2C0D51CD2590ADAF00EF7EF8 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				2C0D51C0258FE7F000EF7EF8 /* ConverterTableViewController.swift */,
+				2C3A9C98258B7DC400266687 /* CurrenciesListViewController.swift */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
 		2C3A9C88258B7DC400266687 = {
 			isa = PBXGroup;
 			children = (
@@ -60,11 +96,11 @@
 		2C3A9C93258B7DC400266687 /* CurrencyConverter */ = {
 			isa = PBXGroup;
 			children = (
-				2C75C66F258F9EB100C692F4 /* CurrencyTableViewCell.swift */,
 				2C3A9C94258B7DC400266687 /* AppDelegate.swift */,
 				2C3A9C96258B7DC400266687 /* SceneDelegate.swift */,
-				2C3A9C98258B7DC400266687 /* CurrenciesListViewController.swift */,
-				2C75C66B258F959B00C692F4 /* BankAPI.swift */,
+				2C0D51CD2590ADAF00EF7EF8 /* ViewController */,
+				2C0D51CB2590ADA800EF7EF8 /* Cell */,
+				2C0D51CA2590AD8F00EF7EF8 /* Model */,
 				2C3A9CAA258B7DE900266687 /* Storyboards */,
 				2C3A9C9D258B7DC800266687 /* Assets.xcassets */,
 				2C3A9CA2258B7DC800266687 /* Info.plist */,
@@ -153,8 +189,12 @@
 			files = (
 				2C3A9C99258B7DC400266687 /* CurrenciesListViewController.swift in Sources */,
 				2C3A9C95258B7DC400266687 /* AppDelegate.swift in Sources */,
+				2C0D51C82590AD6200EF7EF8 /* Converter.swift in Sources */,
+				2CFC52D32591003A00A8CF2A /* ConvertibleCurrencyTableViewCell.swift in Sources */,
 				2C75C66C258F959B00C692F4 /* BankAPI.swift in Sources */,
 				2C75C670258F9EB100C692F4 /* CurrencyTableViewCell.swift in Sources */,
+				2C0D51C1258FE7F000EF7EF8 /* ConverterTableViewController.swift in Sources */,
+				2C0D51C52590AD4100EF7EF8 /* Currency.swift in Sources */,
 				2C3A9C97258B7DC400266687 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

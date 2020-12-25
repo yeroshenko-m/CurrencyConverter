@@ -11,6 +11,7 @@ class CurrencyTableViewCell: UITableViewCell {
 
     @IBOutlet weak var codeLabel: UILabel!
     @IBOutlet weak var rateLabel: UILabel!
+    @IBOutlet weak var decriptionLabel: UILabel!
 
 }
 

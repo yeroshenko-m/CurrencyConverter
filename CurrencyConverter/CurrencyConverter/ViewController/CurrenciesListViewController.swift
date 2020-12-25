@@ -13,19 +13,27 @@ class CurrenciesListViewController: UIViewController {
     @IBOutlet weak var goToConverterScreenButton: UIButton!
     
     private var currenciesList = [Currency]()
-    private let heightForRowInTableView: CGFloat = 50.0
-    private let fontSizeForButton: CGFloat = 20.0
+    private let heightForRowInTableView: CGFloat = 55.0
+    private let fontSizeForButton: CGFloat = 18.0
+    private let bankAPI = BankAPI.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
         configureButton()
-        BankAPI.shared.fetchCurrenciesList { fetchedList in
+        
+        bankAPI.fetchCurrenciesList { fetchedList in
             DispatchQueue.main.async { [weak self] in
                 self?.currenciesList = fetchedList
                 self?.tableView.reloadData()
             }
         }
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        configureNavigationBarAppearence()
     }
     
     private func configureTableView() {
@@ -36,6 +44,16 @@ class CurrenciesListViewController: UIViewController {
     private func configureButton() {
         goToConverterScreenButton.setTitle("Converter", for: .normal)
         goToConverterScreenButton.titleLabel?.font = UIFont.systemFont(ofSize: fontSizeForButton)
+    }
+    
+    private func configureNavigationBarAppearence() {
+        self.navigationItem.title = "Currencies"
+        self.navigationController?.navigationBar.prefersLargeTitles = false
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let destination = segue.destination as? ConverterTableViewController else { return }
+        destination.setupConvertibleCurrenciesList(with: self.currenciesList)     
     }
 }
 
@@ -51,6 +69,7 @@ extension CurrenciesListViewController: UITableViewDelegate, UITableViewDataSour
         let currency = currenciesList[indexPath.row]
         cell.codeLabel.text = currency.code
         cell.rateLabel.text = String(currency.rate)
+        cell.decriptionLabel.text = currency.description
         return cell
     }
     
