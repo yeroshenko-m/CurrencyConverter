@@ -10,17 +10,15 @@ import UIKit
 class CurrenciesListViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var goToConverterScreenButton: UIButton!
     
     private var currenciesList = [Currency]()
     private let heightForRowInTableView: CGFloat = 55.0
     private let fontSizeForButton: CGFloat = 18.0
-    private let bankAPI = BankAPI.shared
+    private let bankAPI = BankAPI()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
-        configureButton()
         
         bankAPI.fetchCurrenciesList { fetchedList in
             DispatchQueue.main.async { [weak self] in
@@ -33,7 +31,7 @@ class CurrenciesListViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        configureNavigationBarAppearence()
+        configureNavigationBar()
     }
     
     private func configureTableView() {
@@ -41,40 +39,69 @@ class CurrenciesListViewController: UIViewController {
         tableView.dataSource = self
     }
     
-    private func configureButton() {
-        goToConverterScreenButton.setTitle("Converter", for: .normal)
-        goToConverterScreenButton.titleLabel?.font = UIFont.systemFont(ofSize: fontSizeForButton)
+    private func configureNavigationBar() {
+        self.title = "Exchange rates 🇺🇦"
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationItem.rightBarButtonItem = editButtonItem
     }
-    
-    private func configureNavigationBarAppearence() {
-        self.navigationItem.title = "Currencies"
-        self.navigationController?.navigationBar.prefersLargeTitles = false
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let destination = segue.destination as? ConverterTableViewController else { return }
-        destination.setupConvertibleCurrenciesList(with: self.currenciesList)     
-    }
+
 }
 
 extension CurrenciesListViewController: UITableViewDelegate, UITableViewDataSource {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return currenciesList.count
-    }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { return currenciesList.count }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "CurrencyCell") as? CurrencyTableViewCell
         else { return UITableViewCell() }
-        let currency = currenciesList[indexPath.row]
-        cell.codeLabel.text = currency.code
-        cell.rateLabel.text = String(currency.rate)
-        cell.decriptionLabel.text = currency.description
+        cell.configure(with: currenciesList[indexPath.row])
         return cell
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return heightForRowInTableView
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { return heightForRowInTableView }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        switch editingStyle {
+        case .delete:
+            tableView.beginUpdates()
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            currenciesList.remove(at: indexPath.row)
+            tableView.endUpdates()
+        default: return
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool { return true }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { return true }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let rowToMove = currenciesList[sourceIndexPath.row]
+        currenciesList.remove(at: sourceIndexPath.row)
+        currenciesList.insert(rowToMove, at: destinationIndexPath.row)
+    }
+    
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        guard let converterVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ConverterViewController")
+                as? ConverterViewController
+        else {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            return
+        }
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+        UISelectionFeedbackGenerator().selectionChanged()
+        
+        let baseCurrency = Currency(rate: 1.0, code: "UAH", description: "Українська гривня")
+        let convertibleCurrency = currenciesList[indexPath.row]
+        
+        converterVC.baseCurrency = baseCurrency
+        converterVC.convertibleCurrency = convertibleCurrency
+        
+        self.navigationController?.pushViewController(converterVC, animated: true)
+        
     }
     
 }

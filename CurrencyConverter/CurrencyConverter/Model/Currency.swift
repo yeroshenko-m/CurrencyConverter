@@ -31,4 +31,11 @@ struct Currency: Codable {
         rate = try container.decode(Double.self, forKey: .rate)
         description = try container.decode(String.self, forKey: .description)
     }
+    
+    init(rate: Double, code: String, description: String) {
+        self.rate = rate
+        self.code = code
+        self.description = description
+    }
+    
 }

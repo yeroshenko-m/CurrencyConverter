@@ -8,18 +8,15 @@
 import Foundation
 
 final class Converter {
-    
-    var firstCurrency: Currency?
-    var secondCurrency: Currency?
-    
-    func convertRate(input: Double) -> Double {
+
+    public func convertRate(convertibleCurrency: Currency, resultCurrency: Currency, amount: Double) -> Double {
         guard
-            let firstCurrency = self.firstCurrency, firstCurrency.rate > 0.0,
-            let secondCurrency = self.secondCurrency, secondCurrency.rate > 0.0
+            convertibleCurrency.rate > 0.0,
+            resultCurrency.rate > 0.0
         else { return 0.0 }
 
-        let convertingСoefficient = firstCurrency.rate / secondCurrency.rate
-        return input * convertingСoefficient
+        let convertingСoefficient = convertibleCurrency.rate / resultCurrency.rate
+        return amount * convertingСoefficient
         
     }
     
