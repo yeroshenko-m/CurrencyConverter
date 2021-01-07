@@ -9,6 +9,10 @@ import UIKit
 
 class CurrenciesListViewController: UITableViewController {
     
+    // MARK: - IBOutlets
+    
+    @IBOutlet weak var sortListButton: UIBarButtonItem!
+    
     // MARK: - Properties
     
     private var currenciesList = [Currency]()
@@ -16,14 +20,59 @@ class CurrenciesListViewController: UITableViewController {
     private let fontSizeForButton: CGFloat = 18.0
     private let bankAPI = BankAPI()
     
+    // MARK: - Ordering list
+    
+    private var currentOrder = CurrenciesOrder.descending
+    
+    @objc private enum CurrenciesOrder: Int, CustomStringConvertible {
+        case descending, raising
+        var description: String {
+            switch self {
+            case .descending:
+                return "Rates ↓"
+            case .raising:
+                return "Rates ↑"
+            }
+        }
+    }
+    
+    // Handles touching "Sort" button, switches state and updates button label //
+    @IBAction func sortListButtonTapped(_ sender: UIBarButtonItem) {
+        switch currentOrder {
+        case .descending:
+            currentOrder = .raising
+            sortListButton.title = currentOrder.description
+            reorder(to: .raising)
+        case .raising:
+            currentOrder = .descending
+            sortListButton.title = currentOrder.description
+            reorder(to: .descending)
+        }
+    }
+    
+    // Reorders currenciesList //
+    private func reorder(to orderType: CurrenciesOrder) {
+        switch orderType {
+        case .descending:
+            currenciesList.sort { $0.rate > $1.rate }
+            tableView.reloadData()
+        case .raising:
+            currenciesList.sort { $0.rate < $1.rate }
+            tableView.reloadData()
+        default: return
+        }
+    }
+    
     // MARK: - ViewController lifecycle methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
         bankAPI.fetchCurrenciesList { fetchedList in
             DispatchQueue.main.async { [weak self] in
-                self?.currenciesList = fetchedList
-                self?.tableView.reloadData()
+                guard let self = self else { return }
+                self.currenciesList = fetchedList
+                self.reorder(to: self.currentOrder)
+                self.tableView.reloadData()
             }
         }
     }
@@ -34,13 +83,33 @@ class CurrenciesListViewController: UITableViewController {
     }
     
     // MARK: - Configuring UI elements
-
+    
     private func configureNavigationBar() {
         self.title = "Exchange rates 🇺🇦"
         self.navigationController?.navigationBar.prefersLargeTitles = true
-        self.navigationItem.rightBarButtonItem = editButtonItem
+        sortListButton.title = currentOrder.description
+        self.navigationItem.rightBarButtonItems = [sortListButton, editButtonItem]
     }
+    
+    fileprivate func configureRefreshControl() {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefreshControlAction), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+    }
+    
+    @objc fileprivate func handleRefreshControlAction() {
+        bankAPI.fetchCurrenciesList { fetchedList in
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.currenciesList = fetchedList
+                self.reorder(to: self.currentOrder)
+                self.tableView.reloadData()
+                self.tableView.refreshControl?.endRefreshing()
 
+            }
+        }
+    }
+    
     // MARK: - TableView methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { return currenciesList.count }

@@ -43,7 +43,6 @@ class ConverterViewController: UIViewController, UITextFieldDelegate {
     var convertibleCurrency: Currency?
     var baseCurrency: Currency?
     
-    
     // MARK: - Constants
     
     private let textFormatString = "%.3f"
@@ -54,13 +53,14 @@ class ConverterViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        [convertibleCurrencyTextField, baseCurrencytextField].forEach {
+            $0?.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+            $0?.delegate = self
+        }
+        
+        subscribeForKeyboardNotifications()
         configureDismissingKeyboardByTouchOutsideTextFields()
-        
-        convertibleCurrencyTextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
-        baseCurrencytextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
-        
-        convertibleCurrencyTextField.delegate = self
-        baseCurrencytextField.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -71,6 +71,11 @@ class ConverterViewController: UIViewController, UITextFieldDelegate {
         configureContainerView()
         configureResetButtonView()
         configureSeparatorView()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unubscribeForKeyboardNotifications()
     }
     
     // MARK: - Configuring elements
@@ -125,23 +130,40 @@ class ConverterViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - Events handling
     
+    // Reset button //
     @IBAction func resetButtonTapped(_ sender: UIButton) {
         UISelectionFeedbackGenerator().selectionChanged()
         configureCurrenciesLabels()
     }
     
+    // Keyboard //
     fileprivate func configureDismissingKeyboardByTouchOutsideTextFields() {
         let outsideTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(outsideTapGestureRecognizer)
     }
     
     fileprivate func subscribeForKeyboardNotifications() {
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
+    
+    @objc fileprivate func keyboardWillShow(notification: Notification) {
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
+//        if containerView.frame.maxY <= self.view.frame.height - keyboardSize.height {
+        self.view.frame.origin.y = 0 - keyboardSize.height / 2.75
+//        }
+    }
+    
+    @objc fileprivate func keyboardWillHide(notification: Notification) {
+        self.view.frame.origin.y = 0
+    }
+    
+    fileprivate func unubscribeForKeyboardNotifications() { NotificationCenter.default.removeObserver(self) }
     
     @objc fileprivate func dismissKeyboard() { self.view.endEditing(true) }
     
     
+    // Textfield //
     #warning("Needs to be fixed")
     @objc fileprivate func textFieldDidChange(_ textField: UITextField) {
         
@@ -150,21 +172,21 @@ class ConverterViewController: UIViewController, UITextFieldDelegate {
             
             switch textField {
             case convertibleCurrencyTextField:
-                if text.isEmpty {
-                    baseCurrencytextField.text = String(format: textFormatString, "0.00")
-                } else {
+//                if text.isEmpty {
+//                    baseCurrencytextField.text = String(format: textFormatString, "0.00")
+//                } else {
                     let convertedValue = converter.convertRate(convertibleCurrency: convertibleCurrency, resultCurrency: baseCurrency, amount: amount)
                     baseCurrencytextField.text = String(format: textFormatString, convertedValue)
-                }
+//                }
                 
                 
             case baseCurrencytextField:
-                if text.isEmpty {
-                    convertibleCurrencyTextField.text = String(format: textFormatString, "0.00")
-                } else {
+//                if text.isEmpty {
+//                    convertibleCurrencyTextField.text = String(format: textFormatString, "0.00")
+//                } else {
                     let convertedValue = converter.convertRate(convertibleCurrency: baseCurrency, resultCurrency: convertibleCurrency, amount: amount)
                     convertibleCurrencyTextField.text = String(format: textFormatString, convertedValue)
-                }
+//                }
             default: return
             }
         }
@@ -193,7 +215,6 @@ class ConverterViewController: UIViewController, UITextFieldDelegate {
         
         return false
     }
-    
     
 }
 

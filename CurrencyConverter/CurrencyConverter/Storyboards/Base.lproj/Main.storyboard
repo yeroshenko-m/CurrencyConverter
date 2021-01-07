@@ -19,10 +19,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xcS-it-qWv">
-                                <rect key="frame" x="52" y="157" width="310.5" height="582"/>
+                                <rect key="frame" x="52" y="201.5" width="310.5" height="493"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="35" translatesAutoresizingMaskIntoConstraints="NO" id="1Ui-8l-rPG">
-                                        <rect key="frame" x="31" y="84.5" width="248" height="413"/>
+                                        <rect key="frame" x="31" y="40" width="248" height="413"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="YCn-59-YtB">
                                                 <rect key="frame" x="12" y="0.0" width="224" height="138"/>
@@ -117,7 +117,7 @@
                             <constraint firstItem="xcS-it-qWv" firstAttribute="centerY" secondItem="Kad-Od-zey" secondAttribute="centerY" id="K1H-qX-Ugx"/>
                             <constraint firstItem="xcS-it-qWv" firstAttribute="width" secondItem="Kad-Od-zey" secondAttribute="width" multiplier="0.75" id="L70-ax-tPo"/>
                             <constraint firstItem="xcS-it-qWv" firstAttribute="centerX" secondItem="Kad-Od-zey" secondAttribute="centerX" id="Zi2-uk-AXi"/>
-                            <constraint firstItem="xcS-it-qWv" firstAttribute="height" secondItem="Kad-Od-zey" secondAttribute="height" multiplier="0.65" id="uzI-fc-3qb"/>
+                            <constraint firstItem="xcS-it-qWv" firstAttribute="height" secondItem="Kad-Od-zey" secondAttribute="height" multiplier="0.55" id="uzI-fc-3qb"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="H6J-Mw-bmL"/>
@@ -197,7 +197,16 @@
                             <outlet property="delegate" destination="Li2-tO-FLs" id="wHO-uV-KCy"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="5k9-YU-zKh"/>
+                    <navigationItem key="navigationItem" id="5k9-YU-zKh">
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="3FC-bu-u9a">
+                            <connections>
+                                <action selector="sortListButtonTapped:" destination="Li2-tO-FLs" id="A10-oe-txi"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="sortListButton" destination="3FC-bu-u9a" id="dJh-ya-mpA"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9in-P4-ZUO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
