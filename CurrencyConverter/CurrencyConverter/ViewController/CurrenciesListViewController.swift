@@ -75,6 +75,7 @@ class CurrenciesListViewController: UITableViewController {
                 self.tableView.reloadData()
             }
         }
+        configureRefreshControl()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -97,14 +98,14 @@ class CurrenciesListViewController: UITableViewController {
         tableView.refreshControl = refreshControl
     }
     
-    @objc fileprivate func handleRefreshControlAction() {
+    @objc fileprivate func handleRefreshControlAction(_ sender: UIRefreshControl) {
         bankAPI.fetchCurrenciesList { fetchedList in
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 self.currenciesList = fetchedList
                 self.reorder(to: self.currentOrder)
                 self.tableView.reloadData()
-                self.tableView.refreshControl?.endRefreshing()
+                sender.endRefreshing()
 
             }
         }
