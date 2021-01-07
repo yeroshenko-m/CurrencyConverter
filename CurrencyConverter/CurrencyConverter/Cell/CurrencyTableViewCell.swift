@@ -15,7 +15,7 @@ class CurrencyTableViewCell: UITableViewCell {
     
     func configure(with model: Currency) {
         self.codeLabel.text = model.code
-        self.rateLabel.text = String(model.rate)
+        self.rateLabel.text = String(format: "%.3f", model.rate)
         self.decriptionLabel.text = model.description
     }
 

@@ -7,26 +7,25 @@
 
 import UIKit
 
-class CurrenciesListViewController: UIViewController {
+class CurrenciesListViewController: UITableViewController {
     
-    @IBOutlet weak var tableView: UITableView!
+    // MARK: - Properties
     
     private var currenciesList = [Currency]()
     private let heightForRowInTableView: CGFloat = 55.0
     private let fontSizeForButton: CGFloat = 18.0
     private let bankAPI = BankAPI()
     
+    // MARK: - ViewController lifecycle methods
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureTableView()
-        
         bankAPI.fetchCurrenciesList { fetchedList in
             DispatchQueue.main.async { [weak self] in
                 self?.currenciesList = fetchedList
                 self?.tableView.reloadData()
             }
         }
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -34,33 +33,32 @@ class CurrenciesListViewController: UIViewController {
         configureNavigationBar()
     }
     
-    private func configureTableView() {
-        tableView.delegate = self
-        tableView.dataSource = self
-    }
-    
+    // MARK: - Configuring UI elements
+
     private func configureNavigationBar() {
         self.title = "Exchange rates 🇺🇦"
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationItem.rightBarButtonItem = editButtonItem
     }
 
-}
-
-extension CurrenciesListViewController: UITableViewDelegate, UITableViewDataSource {
+    // MARK: - TableView methods
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { return currenciesList.count }
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { return currenciesList.count }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool { return true }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { return true }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { return heightForRowInTableView }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "CurrencyCell") as? CurrencyTableViewCell
         else { return UITableViewCell() }
         cell.configure(with: currenciesList[indexPath.row])
         return cell
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { return heightForRowInTableView }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         switch editingStyle {
         case .delete:
             tableView.beginUpdates()
@@ -71,18 +69,14 @@ extension CurrenciesListViewController: UITableViewDelegate, UITableViewDataSour
         }
     }
     
-    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool { return true }
-    
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { return true }
-    
-    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let rowToMove = currenciesList[sourceIndexPath.row]
         currenciesList.remove(at: sourceIndexPath.row)
         currenciesList.insert(rowToMove, at: destinationIndexPath.row)
     }
     
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         guard let converterVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ConverterViewController")
                 as? ConverterViewController
